@@ -85,8 +85,7 @@ extern int snd_DesiredSfxDevice;
 
 
 
-typedef struct
-{
+typedef struct {
     // sound information (if null, channel avail.)
     sfxinfo_t*	sfxinfo;
 

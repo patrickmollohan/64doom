@@ -455,7 +455,9 @@ void I_InitSound (void)
         }
     }
 
-    printf ("I_InitSound: Pre-cached all sound data.\n");
+    if (debugText) {
+        printf ("I_InitSound: Pre-cached all sound data.\n\n");
+    }
 
     // fill in pitch wheel table
     for (i=0; i<128; i++)
@@ -468,7 +470,9 @@ void I_InitSound (void)
     }
 
     // Finished initialization.
-    printf("I_InitSound: Sound module ready.\n");
+    if (debugText) {
+        printf("I_InitSound: Sound module ready.\n\n");
+    }
 
 //    numChannels = SFX_VOICES;
     numChannels = NUM_VOICES;
@@ -604,21 +608,16 @@ void I_InitMusic(void)
 		midiVoice[i].flags = 0x00;
 	}
 
-        if(!midi_pointers)
-        {
-                music_okay = 0;
-
-                midi_pointers = (void*)n64_malloc(sizeof(ULONG)*182);
-
-                int mphnd = rom_open(MIDI_FILE, MIDI_FILESIZE);
-
-                rom_read(mphnd, midi_pointers, sizeof(ULONG)*182);
-
-                rom_close(mphnd);
-
-		printf("I_InitMusic: Pre-cached all MUS instrument headers.\n");
-
-                music_okay = 1;
+        if(!midi_pointers) {
+            music_okay = 0;
+            midi_pointers = (void*)n64_malloc(sizeof(ULONG)*182);
+            int mphnd = rom_open(MIDI_FILE, MIDI_FILESIZE);
+            rom_read(mphnd, midi_pointers, sizeof(ULONG)*182);
+            rom_close(mphnd);
+            if (debugText) {
+                printf("I_InitMusic: Pre-cached all MUS instrument headers.\n\n");
+            }
+            music_okay = 1;
         }
 
 	int f;
@@ -1350,3 +1349,4 @@ mix:
 }
 
 /**********************************************************************/
+

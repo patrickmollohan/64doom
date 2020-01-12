@@ -348,8 +348,7 @@ void W_Reload (void)
 // The name searcher looks backwards, so a later file
 //  does override all earlier ones.
 //
-void W_InitMultipleFiles (char** filenames)
-{
+void W_InitMultipleFiles (char** filenames) {
     int		size;
 
     W_Init();
@@ -360,14 +359,16 @@ void W_InitMultipleFiles (char** filenames)
     // will be realloced as lumps are added
     lumpinfo = (lumpinfo_t *)n64_malloc(1);
 
-    for ( ; *filenames ; filenames++)
-    {
-		printf("W_InitMultipleFiles: adding %s\n", *filenames);
-		W_AddFile(*filenames);
+    for ( ; *filenames ; filenames++) {
+        if (debugText) {
+            printf("W_InitMultipleFiles: adding %s\n\n", *filenames);
+        } else {
+            printf("Loading %s\n\n", *filenames);
+        }
+        W_AddFile(*filenames);
     }
 
-    if (!numlumps)
-    {
+    if (!numlumps) {
 	I_Error("W_InitMultipleFiles: no files found");
     }
 
@@ -375,8 +376,7 @@ void W_InitMultipleFiles (char** filenames)
     size = numlumps * sizeof(*lumpcache);
     lumpcache = (void **)n64_malloc (size);
 
-    if (!lumpcache)
-    {
+    if (!lumpcache) {
         I_Error("W_InitMultipleFiles: Couldn't allocate lumpcache");
     }
 
@@ -557,3 +557,4 @@ void* W_CacheLumpName(char* name, int tag)
 {
     return W_CacheLumpNum(W_GetNumForName(name), tag);
 }
+

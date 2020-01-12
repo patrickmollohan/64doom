@@ -33,12 +33,10 @@
 #endif
 
 
-
 #define MAXWADFILES             20
 extern char*		wadfiles[MAXWADFILES];
 
 void D_AddFile (char *file);
-
 
 
 //
@@ -52,7 +50,6 @@ void D_DoomMain (void);
 // Called by IO functions when input is detected.
 void D_PostEvent (event_t* ev);
 
-	
 
 //
 // BASE LEVEL

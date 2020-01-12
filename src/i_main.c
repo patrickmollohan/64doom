@@ -24,6 +24,7 @@
 
 #include <inttypes.h>
 #include <libdragon.h>
+#include <stdbool.h>
 
 #include "doomdef.h"
 #include "m_argv.h"
@@ -42,54 +43,37 @@ extern uint32_t ytab[];
 extern uint32_t y10tab[];
 extern uint32_t y20tab[];
 
+bool debugText = false;
+
 #define SCREENW 320
 
-void check_and_init_mempak(void)
-{
+void check_and_init_mempak(void) {
     get_accessories_present();
 
-    switch (identify_accessory(0))
-    {
+    switch (identify_accessory(0)) {
+        int err;
         case ACCESSORY_NONE:
-        {
-            printf("No accessory inserted!\n");
+            printf("No Controller Pak inserted!\n\n");
             break;
-        }
         case ACCESSORY_MEMPAK:
-        {
-            int err;
-            if ((err = validate_mempak(0)))
-            {
-                if (err == -3)
-                {
-                    printf("Mempak is not formatted! Formatting it automatically.\n");
-
-                    if (format_mempak(0))
-                    {
-                        printf("Error formatting mempak!\n");
+            if ((err = validate_mempak(0))) {
+                if (err == -3) {
+                    printf("Controller Pak is not formatted!\nFormatting it automatically.\n");
+                    if (format_mempak(0)) {
+                        printf("Error formatting Controller Pak!\n\n");
+                    } else {
+                        printf("Controller Pak formatted!\n\n");
                     }
-                    else
-                    {
-                        printf("Memory card formatted!\n");
-                    }
+                } else {
+                    printf("Controller Pak bad or removed during read!\n\n");
                 }
-                else
-                {
-                    printf("Mempak bad or removed during read!\n");
-                }
+            } else {
+                printf("Controller Pak found!\nFree space: %d blocks\n\n", get_mempak_free_space(0));
             }
-            else
-            {
-                printf("\nFree space: %d blocks\n", get_mempak_free_space(0));
-            }
-
             break;
-        }
         case ACCESSORY_RUMBLEPAK:
-        {
-            printf("Cannot read data off of rumblepak!\n");
+            printf("Cannot read data off of Rumble Pak!\n");
             break;
-        }
     }
 }
 
@@ -97,8 +81,7 @@ extern byte* savebuffer;
 extern int center_x, center_y;
 extern void DoNothing (void);
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     int j;
 
     init_interrupts();
@@ -119,34 +102,43 @@ int main(int argc, char **argv)
     center_x = pressed.x;
     center_y = pressed.y;
 
-    printf("64Doom by jnmartin84\n");
-    printf("github.com/jnmartin84/64doom/\n");
-    printf("built %s %s\n", __DATE__, __TIME__);
+    if (pressed.start) {
+        debugText = true;
+    }
+
+    if (debugText) {
+        printf("64Doom by Patrick Mollohan\n");
+        printf("github.com/patrickmollohan/64doom\n");
+        printf("Built %s %s\n\n", __DATE__, __TIME__);
+    } else {
+        printf("GAME TITLE GOES HERE\n");
+        printf("TAGLINE GOES HERE\n\n");
+    }
 
     int available_memory_size = *(int *)(0x80000318);
 
-    if(available_memory_size != 0x800000)
-    {
-        printf("\n***********************************");
-        printf("Expansion Pak not found.\n");
-        printf("It is required to run 64Doom.\n");
-        printf("Please turn off the Nintendo 64,\ninstall Expansion Pak,\nand try again.\n");
+    if (available_memory_size != 0x800000) {
         printf("***********************************\n");
-        //return -1;
+        printf("Expansion Pak not found!\nIt is required to run 64Doom.\n");
+        printf("Please turn off the Nintendo 64,\ninstall the Expansion Pak, and try again.\n\n");
+        printf("***********************************\n");
+        for (;;);
     }
 
-    printf("Expansion Pak found.\n");
-    printf("Available memory: %d bytes\n", *(int *)(0x80000318));
+    if (debugText) {
+        printf("Expansion Pak found.\n");
+        printf("Available memory: %d bytes\n\n", available_memory_size);
 
-    printf("Checking for Mempak:\n");
+        printf("Checking for Controller Pak:\n");
+    }
+
     check_and_init_mempak();
 
     savebuffer = (byte *)n64_malloc(SAVEGAMESIZE);
 
     I_InitGraphics();
 
-    for (j=0;j<240;j++)
-    {
+    for (j = 0; j < 240; j++) {
         ytab[j]   = ((j   )*SCREENW);
         y10tab[j] = ((j+10)*SCREENW);
 	y20tab[j] = ((j+20)*SCREENW);

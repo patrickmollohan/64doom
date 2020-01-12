@@ -67,19 +67,6 @@
 
 #include "d_main.h"
 
-
-char shareware_banner[]  =	
-				"==================================\n"
-				"            Shareware!\n"
-				"==================================\n";
-char commercial_banner[] =	
-				"==================================\n"
-				"Commercial product - do not distribute!\n"
-				"Please report software piracy to the SPA:\n"
-				"1-800-388-PIR8\n"
-				"==================================\n";
-
-
 byte *big_pal;
 
 extern void DebugOutput_Hex(const int number);
@@ -116,7 +103,7 @@ boolean         fastparm;	// checkparm of -fast
 
 boolean         drone;
 
-boolean		singletics = false; // debug flag to cancel adaptiveness
+boolean		singletics = false; // debugText flag to cancel adaptiveness
 
 
 char CHANGEME[] = "CHANGEME!";
@@ -450,8 +437,8 @@ void D_DoomLoop(void)
     if (M_CheckParm ("-debugfile"))
     {
 	char    filename[20];
-	sprintf (filename,"debug%i.txt",consoleplayer);
-	printf ("debug output to: %s\n",filename);
+	sprintf (filename,"debugText%i.txt",consoleplayer);
+	printf ("debugText output to: %s\n",filename);
 	debugfile = fopen (filename,"w");
     }*/
 	
@@ -720,7 +707,9 @@ void IdentifyVersion(void)
 
     const char *gameid = get_GAMEID();
 
-    printf("IdentifyVersion: %s\n", gameid);
+    if (debugText) {
+        printf("IdentifyVersion: %s\n", gameid);
+    }
 
     if (!stricmp(doom2fwad,gameid))
     {
@@ -863,11 +852,12 @@ void D_DoomMain(void)
 	break;
     }
 
-    printf ("%s\n",title);
+    if (debugText) {
+        printf ("%s\n\n",title);
+    }
 
     // turbo option
-    if ( (p=M_CheckParm ("-turbo")) )
-    {
+    if ( (p=M_CheckParm ("-turbo")) ) {
 	int     scale = 200;
 	extern int forwardmove[2];
 	extern int sidemove[2];
@@ -891,13 +881,11 @@ void D_DoomMain(void)
     // convenience hack to allow -wart e m to add a wad file
     // prepend a tilde to the filename so wadfile will be reloadable
     p = M_CheckParm ("-wart");
-    if (p)
-    {
+    if (p) {
 	myargv[p][4] = 'p';     // big hack, change to -warp
 
 	// Map name handling.
-	switch (gamemode )
-	{
+	switch (gamemode ) {
 	  case shareware:
 	  case retail:
 	  case registered:
@@ -920,8 +908,7 @@ void D_DoomMain(void)
     }
 
     p = M_CheckParm ("-file");
-    if (p)
-    {
+    if (p) {
 	// the parms after p are wadfile/lump names,
 	// until end of parms or another - preceded parm
 	modifiedgame = true;            // homebrew levels
@@ -934,8 +921,7 @@ void D_DoomMain(void)
     if (!p)
 	p = M_CheckParm ("-timedemo");
 
-    if (p && p < myargc-1)
-    {
+    if (p && p < myargc-1) {
 	sprintf (file,"%s.lmp", myargv[p+1]);
 	D_AddFile (file);
 	printf("Playing demo %s.lmp.\n",myargv[p+1]);
@@ -948,23 +934,20 @@ void D_DoomMain(void)
     autostart = false;
 
     p = M_CheckParm ("-skill");
-    if (p && p < myargc-1)
-    {
+    if (p && p < myargc-1) {
 	startskill = myargv[p+1][0]-'1';
 	autostart = true;
     }
 
     p = M_CheckParm ("-episode");
-    if (p && p < myargc-1)
-    {
+    if (p && p < myargc-1) {
 	startepisode = myargv[p+1][0]-'0';
 	startmap = 1;
 	autostart = true;
     }
 
     p = M_CheckParm ("-timer");
-    if (p && p < myargc-1 && deathmatch)
-    {
+    if (p && p < myargc-1 && deathmatch) {
 	int     time;
 	time = atoi(myargv[p+1]);
 	printf("Levels will end after %d minute",time);
@@ -978,12 +961,10 @@ void D_DoomMain(void)
 	printf("Austin Virtual Gaming: Levels will end after 20 minutes\n");
 
     p = M_CheckParm ("-warp");
-    if (p && p < myargc-1)
-    {
-	if (gamemode == commercial)
+    if (p && p < myargc-1) {
+	if (gamemode == commercial) {
 	    startmap = atoi (myargv[p+1]);
-	else
-	{
+	} else {
 	    startepisode = myargv[p+1][0]-'0';
 	    startmap = myargv[p+2][0]-'0';
 	}
@@ -991,107 +972,64 @@ void D_DoomMain(void)
     }
 
     // init subsystems
-    printf ("V_Init: allocate screens.\n");
+    if (debugText) {
+        printf ("V_Init: allocate screens.\n\n");
+    }
     V_Init ();
 
-    printf ("M_LoadDefaults: Load system defaults.\n");
+    if (debugText) {
+        printf ("M_LoadDefaults: Load system defaults.\n\n");
+    }
     M_LoadDefaults ();              // load before initing other systems
 
-    printf ("Z_Init: Init zone memory allocation daemon. \n");
+    if (debugText) {
+        printf ("Z_Init: Init zone memory allocation daemon.\n\n");
+    }
     Z_Init ();
 
-    printf ("W_Init: Init WADfiles.\n");
+    if (debugText) {
+        printf ("W_Init: Init WADfiles.\n\n");
+    }
     W_InitMultipleFiles (wadfiles);
 
-    // Check for -file in shareware
-/*    if (modifiedgame)
-    {
-	// These are the lumps that will be checked in IWAD,
-	// if any one is not present, execution will be aborted.
-	char name[23][8]=
-	{
-	    "e2m1","e2m2","e2m3","e2m4","e2m5","e2m6","e2m7","e2m8","e2m9",
-	    "e3m1","e3m3","e3m3","e3m4","e3m5","e3m6","e3m7","e3m8","e3m9",
-	    "dphoof","bfgga0","heada1","cybra1","spida1d1"
-	};
-	int i;
-
-	if ( gamemode == shareware)
-	    I_Error("\nYou cannot -file with the shareware "
-		    "version. Register!");
-
-	// Check for fake IWAD with right name,
-	// but w/o all the lumps of the registered version.
-	if (gamemode == registered)
-	    for (i = 0;i < 23; i++)
-		if (W_CheckNumForName(name[i])<0)
-		    I_Error("\nThis is not the registered version.");
+    if (debugText) {
+        printf ("M_Init: Init miscellaneous info.\n\n");
     }
-
-    // Iff additonal PWAD files are used, print modified banner
-    if (modifiedgame)
-    {
-	printf (
-	    "===========================================================================\n"
-	    "ATTENTION:  This version of DOOM has been modified.  If you would like to\n"
-	    "get a copy of the original game, call 1-800-IDGAMES or see the readme file.\n"
-	    "        You will not receive technical support for modified games.\n"
-	    "                      press enter to continue\n"
-	    "===========================================================================\n"
-	    );
-	getchar ();
-    }
-*/
-
-    // Check and print which version is executed.
-    switch ( gamemode )
-    {
-      case shareware:
-      case indetermined:
-	printf ( "%s", shareware_banner
-/*	    "===========================================================================\n"
-	    "                                Shareware!\n",
-	    "===========================================================================\n"*/
-	);
-	break;
-      case registered:
-      case retail:
-      case commercial:
-	printf ( "%s", commercial_banner
-/*	    "===========================================================================\n"
-	    "                 Commercial product - do not distribute!\n"
-	    "         Please report software piracy to the SPA: 1-800-388-PIR8\n"
-	    "===========================================================================\n"*/
-	);
-	break;
-
-      default:
-	// Ouch.
-	break;
-    }
-
-    printf ("M_Init: Init miscellaneous info.\n");
     M_Init ();
 
-    printf ("R_Init: Init DOOM refresh daemon - ");
+    if (debugText) {
+        printf ("R_Init: Init DOOM refresh daemon.\n\n");
+    }
     R_Init ();
 
-    printf ("\nP_Init: Init Playloop state.\n");
+    if (debugText) {
+        printf ("P_Init: Init Playloop state.\n\n");
+    }
     P_Init ();
 
-    printf ("I_Init: Setting up machine state.\n");
+    if (debugText) {
+        printf ("I_Init: Setting up machine state.\n\n");
+    }
     I_Init ();
 
-    printf ("D_CheckNetGame: Checking network game status.\n");
+    if (debugText) {
+        printf ("D_CheckNetGame: Checking network game status.\n\n");
+    }
     D_CheckNetGame ();
 
-    printf ("S_Init: Setting up sound.\n");
-    S_Init (snd_SfxVolume /* *8 */, snd_MusicVolume /* *8*/ );
+    if (debugText) {
+        printf ("S_Init: Setting up sound.\n\n");
+    }
+    S_Init (snd_SfxVolume, snd_MusicVolume);
 
-    printf ("HU_Init: Setting up heads up display.\n");
+    if (debugText) {
+        printf ("HU_Init: Setting up heads up display.\n\n");
+    }
     HU_Init ();
 
-    printf ("ST_Init: Init status bar.\n");
+    if (debugText) {
+        printf ("ST_Init: Init status bar.\n\n");
+    }
     ST_Init ();
 
 /*    // check for a driver that wants intermission stats
@@ -1139,25 +1077,22 @@ void D_DoomMain(void)
 	G_LoadGame (file);
     }*/
 
-    if (!should_sound)
-    {
+    if (!should_sound) {
         // install sound callback
         register_AI_handler(sound_callback);
         set_AI_interrupt(1);
         should_sound = 1;
         sound_callback();
-        printf("D_DoomMain: AI interrupt handler installed.\n");
+        if (debugText) {
+            printf("D_DoomMain: AI interrupt handler installed.\n");
+        }
     }
 
 
-    if (gameaction != ga_loadgame)
-    {
-        if (autostart || netgame)
-        {
+    if (gameaction != ga_loadgame) {
+        if (autostart || netgame) {
             G_InitNew(startskill, startepisode, startmap);
-        }
-        else
-        {
+        } else {
             D_StartTitle(); // start up intro loop
         }
     }
@@ -1167,8 +1102,7 @@ void D_DoomMain(void)
     console_close();
 
     // clear screen before game starts
-    for(int vi=0;vi<2;vi++)
-    {
+    for(int vi=0;vi<2;vi++) {
         _dc = lockVideo(1);
 
         uint16_t *video_ptr = &((uint16_t *)__safe_buffer[(_dc)-1])[0];

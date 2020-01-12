@@ -1,5 +1,5 @@
 ROOTDIR			=$(N64_INST)
-DOOMDIR			= /home/Jason/gitland/64doom/src
+DOOMDIR			= ~/64doom/src
 
 MIDIPATH_LOW		= $(DOOMDIR)/ADoom_Instr
 MIDIPATH_HIGH		= $(DOOMDIR)/ADoom_Ins
