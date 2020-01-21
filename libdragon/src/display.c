@@ -178,6 +178,7 @@ static void __write_registers( uint32_t const * const registers )
         if( i == 4 ) { continue; }
 
         reg_base[i] = registers[i];
+        MEMORY_BARRIER();
     }
 }
 
@@ -192,6 +193,7 @@ static void __write_dram_register( void const * const dram_val )
     uint32_t *reg_base = (uint32_t *)REGISTER_BASE;
 
     reg_base[1] = (uint32_t)dram_val;
+    MEMORY_BARRIER();
 }
 
 /**
@@ -269,7 +271,7 @@ void display_init( resolution_t res, bitdepth_t bit, uint32_t num_buffers, gamma
     }
 
     /* Copy over to temporary for extra initializations */
-    __n64_memcpy_ASM( registers, reg_values[tv_type], sizeof( uint32_t ) * REGISTER_COUNT );
+    memcpy( registers, reg_values[tv_type], sizeof( uint32_t ) * REGISTER_COUNT );
 
     /* Figure out control register based on input given */
     switch( bit )
@@ -350,11 +352,11 @@ void display_init( resolution_t res, bitdepth_t bit, uint32_t num_buffers, gamma
     {
         /* Set parameters necessary for drawing */
         /* Grab a location to render to */
-        buffer[i] = n64_malloc( __width * __height * __bitdepth + 15 );
+        buffer[i] = malloc( __width * __height * __bitdepth + 15 );
         __safe_buffer[i] = ALIGN_16BYTE( UNCACHED_ADDR( buffer[i] ) );
 
         /* Baseline is blank */
-        n64_memset( __safe_buffer[i], 0, __width * __height * __bitdepth );
+        memset( __safe_buffer[i], 0, __width * __height * __bitdepth );
     }
 
     /* Set the first buffer as the displaying buffer */
@@ -398,7 +400,7 @@ void display_close()
         /* Free framebuffer memory */
         if( buffer[i] )
         {
-            n64_free( buffer[i]);
+            free( buffer[i]);
         }
 
         buffer[i] = 0;

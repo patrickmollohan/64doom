@@ -52,7 +52,5 @@ int main( int argc, char *argv[] )
         }
     }
 
-    printf("%d", ret);
-
     return 0;
 }

@@ -182,7 +182,7 @@ void console_init()
     display_close();
     display_init( RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, ANTIALIAS_RESAMPLE );
 
-    render_buffer = n64_malloc(CONSOLE_SIZE);
+    render_buffer = malloc(CONSOLE_SIZE);
 
     console_clear();
     console_set_render_mode(RENDER_AUTOMATIC);
@@ -202,7 +202,7 @@ void console_close()
     if(render_buffer)
     {
         /* Nuke the console buffer */
-        n64_free(render_buffer);
+        free(render_buffer);
         render_buffer = 0;
     }
 
@@ -230,7 +230,7 @@ void console_clear()
     render_now = render;
 
     /* Remove all data */
-    n64_memset(render_buffer, 0, CONSOLE_SIZE);
+    memset(render_buffer, 0, CONSOLE_SIZE);
     
     /* Should we display? */
     if(render_now == RENDER_AUTOMATIC)
