@@ -111,8 +111,12 @@ int main(int argc, char **argv) {
         printf("github.com/patrickmollohan/64doom\n");
         printf("Built %s %s\n\n", __DATE__, __TIME__);
     } else {
-        printf("GAME TITLE GOES HERE\n");
-        printf("TAGLINE GOES HERE\n\n");
+        printf("The Ultimate DOOM\n\n");
+        //printf("TAGLINE GOES HERE\n\n");
+        printf("Author:  %s\n", "id Software");
+        printf("Version: %s\n", "1.9");
+        printf("Date:    %s\n", "April 30, 1995");
+        printf("\n%s\n\n", "The demons came and the marines\ndied. Except one. You are the last\ndefense against these hell-spawned\nhordes. Prepare for the most\nintense mutant-laden, blood-\nsplattered action ever! The\ntexture-mapped virtual world is so\nreal, you don't just play DOOM -\nyou live it.");
     }
 
     int available_memory_size = *(int *)(0x80000318);
