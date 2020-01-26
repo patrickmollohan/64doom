@@ -30,41 +30,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define n64_free(b) \
-free(b)
-
-//n64_free2((b), __FILE__, __LINE__)
-
-#define n64_malloc(s) \
-malloc(s)
-
-//n64_malloc2((s), __FILE__, __LINE__)
-
-#define n64_memcpy(d,s,t) \
-memcpy((d),(s),(t))
-
-#define n64_memmove_naive_no_malloc(d,s,n) \
-memmove((d),(s),(n))
-
-#define n64_memmove_naive(d,s,n) \
-memmove((d),(s),(n))
-
-#define n64_memmove(d,s,n) \
-memmove((d),(s),(n))
-
-#define n64_memmove_old_with_potential_bug(d,s,n) \
-memmove((d),(s),(n))
-
-#define n64_memset(p,v,n) \
-memset((p),(v),(n))
-
-#define n64_memset2(p,v,n) \
-memset((p),(v),(n))
-
-#define n64_realloc(p,n) \
-realloc((p),(n))
-
-
 //#define PROFILE_MEMORY
 
 /* Values for the second argument to access.
