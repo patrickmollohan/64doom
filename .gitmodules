@@ -1,0 +1,3 @@
+[submodule "lib/libdragon"]
+	path = lib/libdragon
+	url = https://github.com/patrickmollohan/libdragon
