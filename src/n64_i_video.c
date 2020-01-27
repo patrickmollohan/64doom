@@ -87,10 +87,10 @@ void optimized_bresenham_scale_image(uint8_t *output, uint8_t *input, int w1, in
 
 // module-local
 
-static int update_count = 0;
+//static int update_count = 0;
 
-static char  __attribute__((aligned(8))) legend_string[256];
-static uint8_t __attribute__((aligned(8))) tmpscreen[SCREENW*240];
+//static char  __attribute__((aligned(8))) legend_string[256];
+//static uint8_t __attribute__((aligned(8))) tmpscreen[SCREENW*240];
 static uint32_t __attribute__((aligned(8))) colorbar[256];
 
 static uint32_t BLACK_COL;

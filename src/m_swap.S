@@ -3,7 +3,7 @@
 // Swap 16bit, that is, MSB and LSB byte.
 /* unsigned short SwapSHORT (unsigned short x) */
 	.set	nomips16
-	.set	nomicromips
+	//.set	nomicromips
 	.ent	SwapSHORT
 	.type	SwapSHORT, @function
 SwapSHORT:
@@ -26,7 +26,7 @@ SwapSHORT:
 // Swapping 32bit.
 /* unsigned long SwapLONG (unsigned long x) */
 	.set	nomips16
-	.set	nomicromips
+	//.set	nomicromips
 	.ent	SwapLONG
 	.type	SwapLONG, @function
 SwapLONG:

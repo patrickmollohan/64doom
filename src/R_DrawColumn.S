@@ -17,7 +17,7 @@
 //
 /* void R_DrawColumn (void) */
 	.set	nomips16
-	.set	nomicromips
+	//.set	nomicromips
 	.ent	R_DrawColumn
 	.type	R_DrawColumn,	@function
 R_DrawColumn:

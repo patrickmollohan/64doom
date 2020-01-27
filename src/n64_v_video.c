@@ -299,7 +299,7 @@ V_DrawPatchFlipped
     }
 #endif 
  
-	uint32_t y_o = y;
+//	uint32_t y_o = y;
  
 // if (!scrn)
 //	V_MarkRect (x, y, SHORT(patch->width), SHORT(patch->height)); 
@@ -402,8 +402,8 @@ V_GetBlock
   byte*		dest ) 
 { 
     byte*	src; 
-	int		i;
-	int		height_o;
+//	int		i;
+//	int		height_o;
 #ifdef RANGECHECK 
     if (x<0
 	||x+width >SCREENWIDTH

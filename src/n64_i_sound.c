@@ -445,7 +445,7 @@ void I_InitSound (void)
             // Load data from WAD file.
             S_sfx[i].data = getsfx(S_sfx[i].name, &lengths[i]);
 			
-			n64_i_sound_s_sfx_data_size += &lengths[i];
+			n64_i_sound_s_sfx_data_size += (int) &lengths[i];
         }
         else
         {

@@ -15,7 +15,7 @@
 // Draws the actual span.
 /* void R_DrawSpan (void) */
 	.set	nomips16
-	.set	nomicromips
+	//.set	nomicromips
 	.ent	R_DrawSpan
 	.type	R_DrawSpan,	@function
 R_DrawSpan:

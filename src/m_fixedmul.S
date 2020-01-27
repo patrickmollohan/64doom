@@ -2,7 +2,7 @@
 
 /* fixed_t FixedMul ( fixed_t	a, fixed_t	b ) */
 	.set	nomips16
-	.set	nomicromips
+	//.set	nomicromips
 	.ent	FixedMul
 	.type	FixedMul, @function
 FixedMul:
